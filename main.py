@@ -172,13 +172,42 @@ def displaye_exp(t):
     draw_screen()
     if(t=='D'):
         expression=expression[:len(expression)-1]
+    elif(t=='='):
+        result(expression)
     else:
         expression=expression+t
     print(expression)
     text=font.render(expression, True, (0,0,0))
     screen.blit(text, (20,20))
 
+def result(text):
+    print(check_validity(text))
+    print("result")
 
+def check_validity(text):
+    print(text[-1])
+    if(not(text[-1].isnumeric()) and text[-1]!='(' and text[-1]!=')'):
+        print("no ultimo car")
+        return False
+    count=0
+    for c in text:
+        if count<0:
+            print(")in piu")
+            return False
+        if c=='(':
+            count+=1
+        elif c==')':
+            count-=1
+    if (count!=0):
+        print("( in piu")
+        return False
+    for i in range(0, len(text)-2):
+        print(text[i+1])
+        if((not(text[i].isnumeric()) and text[i]!='(' and text[i]!=')') and (not(text[i+1].isnumeric()) and text[i+1]!='(' and text[i+1]!=')')):
+            print("non num")
+            return False
+    
+    return True
 
 pygame.init()
 clock=pygame.time.Clock()
