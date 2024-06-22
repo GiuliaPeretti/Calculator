@@ -359,7 +359,7 @@ def division_by_zero():
 pygame.init()
 clock=pygame.time.Clock()
 screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT), flags, vsync=1)
-pygame.display.set_caption('Progress bar')
+pygame.display.set_caption('Calculator')
 font = pygame.font.SysFont('arial', 20)
 run=True
 draw_backgrownd()
