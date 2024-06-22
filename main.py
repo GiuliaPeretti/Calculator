@@ -1,6 +1,7 @@
 import pygame
 from settings import *
 import ast
+import time
 
 def draw_backgrownd():
     screen.fill(BACKGROUND_COLOR)
@@ -181,12 +182,16 @@ def displaye_exp(t):
 def result(text):
     print(check_validity(text))
     if(check_validity(text)):
-        print(calculate(text))
+        result=text
+        while not(str(result).isnumeric()):
+            result=calculate(text)
+        display_result(result)
     else:
         font = pygame.font.SysFont('arial', 35)
         text=font.render("Syntax error", True, (255,0,0))
         screen.blit(text, (SCREEN_WIDTH-20-190, SCREEN_HEIGHT/4-35))
     print("result")
+
 
 def check_validity(text):
     if (text==''):
@@ -215,25 +220,136 @@ def check_validity(text):
     return True
 
 def calculate(text):
+    if(text[0]=='(' and text[-1]==')'):
+        text=text[1:len(text)-1]
     while('(' in text):
         pos1, pos2=inside_par(text)
         if (text[pos1+1:pos2].isnumeric()):
-            text=text[:pos1]+text[pos1+1:pos2]+text[pos2+1:]
+            print("dentro la parentesi è num")
+            num=int(text[pos1+1:pos2])
+            if(text[pos1-1].isnumeric()):
+                print("prima num")
+                text=text[:pos1]+'*'+str(num)+text[pos2+1:]
+            elif(text[pos2+1].isnumeric()):
+                print("dopo num")
+                text=text[:pos1]+str(num)+'*'+text[pos2+1:]
+            elif(text[pos1-11].isnumeric() and text[pos2+1].isnumeric()):
+                text=text[:pos1]+'*'+str(num)+'*'+text[pos2+1:]
+            else:
+                print("niente num")
+                text=text[:pos1]+str(num)+text[pos2+1:]
         else:
-            pass
+            t=text[pos1+1:pos2]
+            text=text[:pos1]+str(operation(t))+text[pos2+1:]
+    else:
+        text=operation(text)
     return(text)
-
 
 def inside_par(text):  #(34((23)*2)3(23))
     pos1=text.index('(')
     pos2=text.index(')')
-    text=text[pos+1:text.index(')')]
+    text=text[pos1+1:text.index(')')]
     while('(' in text):
         pos=text.index('(')
-        text=text[pos+1:]
-    return(pos,pos2)
+        text=text[pos1+1:]
+    return(pos1,pos2)
 
-
+def operation(text):
+    time.sleep(5)
+    if('+' in text):
+        print("trovata addizione")
+        x=text[:text.index('+')]
+        if(x.isnumeric()):
+            print("x è un numero")
+            x=float(x)
+        else:
+            print("x non è un numero")
+            print(x)
+            x=float(operation(x))
+            print("nuova x")
+            print(x)
+        y=text[text.index('+')+1:]
+        if(y.isnumeric()):
+            print("y è un numero")
+            y=float(y)
+        else:
+            print("y non è un numero")
+            print(y)
+            y=float(operation(y))
+            print("nuova y")
+            print(y)
+        print("nuova y"+str(y))
+        print(x+y)
+        return(x+y)
+    
+    if('-' in text):
+        x=text[:text.index('-')]
+        if(x.isnumeric()):
+            x=float(x)
+        else:
+            x=float(operation(x))
+        y=text[text.index('-')+1:]
+        if(y.isnumeric()):
+            y=float(y)
+        else:
+            y=float(operation(y))
+        return(x-y)
+    
+    if('*' in text):
+        print("trovata moltiplicazione")
+        x=text[:text.index('*')]
+        if(x.isnumeric()):
+            print("x è numerico")
+            print(x)
+            x=float(x)
+        else:
+            print("x non num")
+            print(x)
+            x=float(operation(x))
+            print("nuova x")
+        y=text[text.index('*')+1:]
+        if(y.isnumeric()):
+            print("y è num")
+            y=float(y)
+        else:
+            print(" y non è num")
+            print(y)
+            y=float(operation(y))
+            print("nuova y")
+            print(y)
+        print("risultato molt" + str(x*y))
+        return(x*y)
+    
+    if('/' in text):
+        x=text[:text.index('/')]
+        if(x.isnumeric()):
+            x=float(x)
+        else:
+            x=float(operation(x))
+        y=text[text.index('/')+1:]
+        if(y.isnumeric()):
+            y=float(y)
+        else:
+            y=float(operation(y))
+        return(x/y)
+    
+    if('^' in text):
+        x=text[:text.index('^')]
+        if(x.isnumeric()):
+            x=float(x)
+        else:
+            x=float(operation(x))
+        y=text[text.index('^')+1:]
+        if(y.isnumeric()):
+            y=float(y)
+        else:
+            y=float(operation(y))
+        return(x**y)  
+    
+def display_result(result):
+    font = pygame.font.SysFont('arial', 35)
+    text=font.render(str(result), True, (0,255,0))
+    screen.blit(text, (20, SCREEN_HEIGHT/4-35))
 
 
 
