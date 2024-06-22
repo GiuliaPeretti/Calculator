@@ -183,7 +183,7 @@ def result(text):
     print(check_validity(text))
     if(check_validity(text)):
         result=text
-        while not(str(result).isnumeric()):
+        while not(check_float(str(result))):
             result=calculate(text)
         display_result(result)
     else:
@@ -245,7 +245,7 @@ def calculate(text):
         text=operation(text)
     return(text)
 
-def inside_par(text):  #(34((23)*2)3(23))
+def inside_par(text):  #(34(23*2)3(23))
     pos1=text.index('(')
     pos2=text.index(')')
     text=text[pos1+1:text.index(')')]
@@ -259,7 +259,7 @@ def operation(text):
     if('+' in text):
         print("trovata addizione")
         x=text[:text.index('+')]
-        if(x.isnumeric()):
+        if(check_float(x)):
             print("x è un numero")
             x=float(x)
         else:
@@ -269,7 +269,8 @@ def operation(text):
             print("nuova x")
             print(x)
         y=text[text.index('+')+1:]
-        if(y.isnumeric()):
+
+        if(check_float(y)):
             print("y è un numero")
             y=float(y)
         else:
@@ -279,26 +280,27 @@ def operation(text):
             print("nuova y")
             print(y)
         print("nuova y"+str(y))
+        print("risultato definitivo: ")
         print(x+y)
-        return(x+y)
+        return(str(x+y))
     
-    if('-' in text):
+    elif('-' in text):
         x=text[:text.index('-')]
-        if(x.isnumeric()):
+        if(check_float(x)):
             x=float(x)
         else:
             x=float(operation(x))
         y=text[text.index('-')+1:]
-        if(y.isnumeric()):
+        if(check_float(y)):
             y=float(y)
         else:
             y=float(operation(y))
-        return(x-y)
+        return(str(x-y))
     
-    if('*' in text):
+    elif('*' in text):
         print("trovata moltiplicazione")
         x=text[:text.index('*')]
-        if(x.isnumeric()):
+        if(check_float(x)):
             print("x è numerico")
             print(x)
             x=float(x)
@@ -308,7 +310,7 @@ def operation(text):
             x=float(operation(x))
             print("nuova x")
         y=text[text.index('*')+1:]
-        if(y.isnumeric()):
+        if(check_float(y)):
             print("y è num")
             y=float(y)
         else:
@@ -318,39 +320,47 @@ def operation(text):
             print("nuova y")
             print(y)
         print("risultato molt" + str(x*y))
-        return(x*y)
+        return(str(x*y))
     
-    if('/' in text):
+    elif('/' in text):
         x=text[:text.index('/')]
-        if(x.isnumeric()):
+        if(check_float(x)):
             x=float(x)
         else:
             x=float(operation(x))
         y=text[text.index('/')+1:]
-        if(y.isnumeric()):
+        if(check_float(y)):
             y=float(y)
         else:
             y=float(operation(y))
-        return(x/y)
+        return(str(x/y))
     
-    if('^' in text):
+    elif('^' in text):
         x=text[:text.index('^')]
-        if(x.isnumeric()):
+        if(check_float(x)):
             x=float(x)
         else:
             x=float(operation(x))
         y=text[text.index('^')+1:]
-        if(y.isnumeric()):
+        if(check_float(y)):
             y=float(y)
         else:
             y=float(operation(y))
-        return(x**y)  
+        return(str(x**y))  
+
     
 def display_result(result):
     font = pygame.font.SysFont('arial', 35)
     text=font.render(str(result), True, (0,255,0))
     screen.blit(text, (20, SCREEN_HEIGHT/4-35))
 
+
+def check_float(text):
+    try:
+        float(text)
+        return True
+    except:
+        return False
 
 
 pygame.init()
