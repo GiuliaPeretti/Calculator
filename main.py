@@ -135,7 +135,6 @@ def draw_buttons():
     boxes.append({'name': '*', 'box':((x,x+w),(y,y+h))})
 
 
-
     x, y= 10, y+h+10
     pygame.draw.rect(screen, color_button, (x,y,w,h))
     pygame.draw.rect(screen, (0,0,0), (x,y,w,h), 3)
@@ -176,16 +175,24 @@ def displaye_exp(t):
         result(expression)
     else:
         expression=expression+t
-    print(expression)
     text=font.render(expression, True, (0,0,0))
     screen.blit(text, (20,20))
 
 def result(text):
     print(check_validity(text))
+    if(check_validity(text)):
+        print(calculate(text))
+    else:
+        font = pygame.font.SysFont('arial', 35)
+        text=font.render("Syntax error", True, (255,0,0))
+        screen.blit(text, (SCREEN_WIDTH-20-190, SCREEN_HEIGHT/4-35))
     print("result")
 
 def check_validity(text):
-    print(text[-1])
+    if (text==''):
+        return False
+    if ('()'in text):
+        return False
     if(not(text[-1].isnumeric()) and text[-1]!='(' and text[-1]!=')'):
         print("no ultimo car")
         return False
@@ -202,12 +209,33 @@ def check_validity(text):
         print("( in piu")
         return False
     for i in range(0, len(text)-2):
-        print(text[i+1])
         if((not(text[i].isnumeric()) and text[i]!='(' and text[i]!=')') and (not(text[i+1].isnumeric()) and text[i+1]!='(' and text[i+1]!=')')):
             print("non num")
             return False
-    
     return True
+
+def calculate(text):
+    while('(' in text):
+        pos1, pos2=inside_par(text)
+        if (text[pos1+1:pos2].isnumeric()):
+            text=text[:pos1]+text[pos1+1:pos2]+text[pos2+1:]
+        else:
+            pass
+    return(text)
+
+
+def inside_par(text):  #(34((23)*2)3(23))
+    pos1=text.index('(')
+    pos2=text.index(')')
+    text=text[pos+1:text.index(')')]
+    while('(' in text):
+        pos=text.index('(')
+        text=text[pos+1:]
+    return(pos,pos2)
+
+
+
+
 
 pygame.init()
 clock=pygame.time.Clock()
@@ -228,7 +256,6 @@ while run:
             x,y=pygame.mouse.get_pos()
             for i in boxes:
                 if (x>i['box'][0][0] and x<=i['box'][0][1] and y>=i['box'][1][0] and y<=i['box'][1][1]):
-                    print(i['name'])
                     displaye_exp(i['name'])
 
         if (event.type == pygame.KEYDOWN):
